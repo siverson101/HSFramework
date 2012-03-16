@@ -41,8 +41,8 @@ function Scene:init()
     self._visible = true
     self._topLayer = Layer:new()
     self.sceneHandler = {}
-    self.sceneOpenAnimation = SceneAnimation.crossFade
-    self.sceneCloseAnimation = SceneAnimation.crossFade
+    self.sceneOpenAnimation = SceneAnimation.slideToLeft
+    self.sceneCloseAnimation = SceneAnimation.slideToRight
     self:addChild(self.topLayer)
     
     self:setSize(Application.stageWidth, Application.stageHeight)
@@ -400,31 +400,31 @@ end
 ---------------------------------------
 -- シーンの生成処理時に一度だけ呼ばれます。
 ---------------------------------------
-function Scene:onCreate()
-    FunctionUtil.callExist(self.sceneHandler.onCreate)    
+function Scene:onCreate(parent, params)
+    FunctionUtil.callExist(self.sceneHandler.onCreate, parent, params)
     self._opened = true
 end
 
 ---------------------------------------
 -- シーンの開始時に一度だけ呼ばれます。
 ---------------------------------------
-function Scene:onStart()
-    FunctionUtil.callExist(self.sceneHandler.onStart)    
+function Scene:onStart(params)
+    FunctionUtil.callExist(self.sceneHandler.onStart, params)
 end
 
 ---------------------------------------
 -- シーンの再開時に呼ばれます。
 -- pauseした場合に、再開処理で呼ばれます。
 ---------------------------------------
-function Scene:onResume()
-    FunctionUtil.callExist(self.sceneHandler.onResume)    
+function Scene:onResume(params)
+    FunctionUtil.callExist(self.sceneHandler.onResume, params)
 end
 
 ---------------------------------------
 -- シーンの一時停止時に呼ばれます。
 ---------------------------------------
 function Scene:onPause()
-    FunctionUtil.callExist(self.sceneHandler.onPause)    
+    FunctionUtil.callExist(self.sceneHandler.onPause)
 end
 
 ---------------------------------------
@@ -434,7 +434,7 @@ end
 ---------------------------------------
 function Scene:onStop()
     self._opened = false
-    FunctionUtil.callExist(self.sceneHandler.onStop) 
+    FunctionUtil.callExist(self.sceneHandler.onStop)
 end
 
 ---------------------------------------
@@ -510,6 +510,7 @@ function Scene:onSceneTouchCommon(event, funcName)
         if self[funcName] then
             self[funcName](self, event)
         end
+        self:dispatchEvent(event)
     end
     if not event.stoped then
         FunctionUtil.callExist(self.sceneHandler[funcName], event)
