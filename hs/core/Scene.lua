@@ -400,8 +400,8 @@ end
 ---------------------------------------
 -- シーンの生成処理時に一度だけ呼ばれます。
 ---------------------------------------
-function Scene:onCreate(parent, params)
-    FunctionUtil.callExist(self.sceneHandler.onCreate, parent, params)
+function Scene:onCreate(params)
+    FunctionUtil.callExist(self.sceneHandler.onCreate, self, params)
     self._opened = true
 end
 
